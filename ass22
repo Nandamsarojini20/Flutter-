@@ -1,0 +1,104 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(NumberSyncApp());
+}
+
+class NumberSyncApp extends StatefulWidget {
+  @override
+  _NumberSyncAppState createState() => _NumberSyncAppState();
+}
+
+class _NumberSyncAppState extends State<NumberSyncApp> {
+  int number = 0;
+
+  void incrementNumber() {
+    setState(() {
+      number++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Two Screens Number Sync',
+      debugShowCheckedModeBanner: false,
+      home: HomeScreen(
+        number: number,
+        onIncrement: incrementNumber,
+        onNavigate: () async {
+          // Navigate to Second Screen and wait for return
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SecondScreen(number: number),
+            ),
+          );
+          // When coming back, setState to rebuild UI (if needed)
+          setState(() {});
+        },
+      ),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  final int number;
+  final VoidCallback onIncrement;
+  final VoidCallback onNavigate;
+
+  const HomeScreen({
+    required this.number,
+    required this.onIncrement,
+    required this.onNavigate,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Home Screen (Screen A)'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.navigate_next),
+            tooltip: 'Go to Screen B',
+            onPressed: onNavigate,
+          ),
+        ],
+      ),
+      body: Center(
+        child: Text(
+          'Number: $number',
+          style: const TextStyle(fontSize: 36),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: onIncrement,
+        tooltip: 'Increment Number',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class SecondScreen extends StatelessWidget {
+  final int number;
+
+  const SecondScreen({required this.number, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Second Screen (Screen B)'),
+      ),
+      body: Center(
+        child: Text(
+          'Number: $number',
+          style: const TextStyle(fontSize: 36),
+        ),
+      ),
+    );
+  }
+}
