@@ -1,0 +1,130 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+// Dedicated routing class
+class AppRoutes {
+  static const String home = '/';
+  static const String about = '/about';
+
+  static Route<dynamic> generateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case home:
+        return MaterialPageRoute(builder: (_) => HomeScreen());
+      case about:
+        final Color bgColor = (settings.arguments as Color?) ?? Colors.blue;
+        return MaterialPageRoute(
+          builder: (_) => AboutScreen(backgroundColor: bgColor),
+        );
+      default:
+        return MaterialPageRoute(
+          builder: (_) => Scaffold(
+            body: Center(child: Text('No route defined for ${settings.name}')),
+          ),
+        );
+    }
+  }
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Routing & Color Passing',
+      debugShowCheckedModeBanner: false,
+      initialRoute: AppRoutes.home,
+      onGenerateRoute: AppRoutes.generateRoute,
+    );
+  }
+}
+
+class HomeScreen extends StatefulWidget {
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  Color selectedColor = Colors.blue;
+
+  final List<Color> colors = [
+    Colors.blue,
+    Colors.green,
+    Colors.orange,
+    Colors.purple,
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Home Screen')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const Text(
+              'Select a Background Color for About Screen:',
+              style: TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 20),
+            Wrap(
+              spacing: 15,
+              children: colors.map((color) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedColor = color;
+                    });
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: color,
+                    radius: selectedColor == color ? 28 : 24,
+                    child: selectedColor == color
+                        ? const Icon(Icons.check, color: Colors.white)
+                        : null,
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.about,
+                  arguments: selectedColor,
+                );
+              },
+              child: const Text('Go to About Screen'),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AboutScreen extends StatelessWidget {
+  final Color backgroundColor;
+
+  const AboutScreen({required this.backgroundColor, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        backgroundColor: backgroundColor,
+        title: const Text('About Screen'),
+      ),
+      body: Center(
+        child: Text(
+          'This screen uses the selected color!',
+          style: TextStyle(fontSize: 22, color: Colors.white),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+}
