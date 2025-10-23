@@ -1,0 +1,100 @@
+class RegistrationForm extends StatefulWidget {
+  @override
+  _RegistrationFormState createState() => _RegistrationFormState();
+}
+
+class _RegistrationFormState extends State<RegistrationForm> {
+  final _formKey = GlobalKey<FormBuilderState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('User Registration Form')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: FormBuilder(
+          key: _formKey,
+          child: Column(
+            children: [
+              // First Name
+              FormBuilderTextField(
+                name: 'firstName',
+                decoration: const InputDecoration(
+                  labelText: 'First Name',
+                  border: OutlineInputBorder(),
+                ),
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(errorText: 'First name is required'),
+                  FormBuilderValidators.minLength(5, errorText: 'Minimum 5 characters required'),
+                  FormBuilderValidators.maxLength(15, errorText: 'Maximum 15 characters allowed'),
+                ]),
+              ),
+              const SizedBox(height: 15),
+
+              // Last Name
+              FormBuilderTextField(
+                name: 'lastName',
+                decoration: const InputDecoration(
+                  labelText: 'Last Name',
+                  border: OutlineInputBorder(),
+                ),
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(errorText: 'Last name is required'),
+                  FormBuilderValidators.minLength(5, errorText: 'Minimum 5 characters required'),
+                  FormBuilderValidators.maxLength(15, errorText: 'Maximum 15 characters allowed'),
+                ]),
+              ),
+              const SizedBox(height: 15),
+
+              // Email
+              FormBuilderTextField(
+                name: 'email',
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(errorText: 'Email is required'),
+                  FormBuilderValidators.email(errorText: 'Enter a valid email address'),
+                ]),
+              ),
+              const SizedBox(height: 15),
+
+              // Phone Number
+              FormBuilderTextField(
+                name: 'phoneNumber',
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  labelText: 'Phone Number',
+                  border: OutlineInputBorder(),
+                ),
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(errorText: 'Phone number is required'),
+                  FormBuilderValidators.numeric(errorText: 'Enter only digits'),
+                  FormBuilderValidators.equalLength(10, errorText: 'Phone number must be 10 digits'),
+                ]),
+              ),
+              const SizedBox(height: 25),
+
+              // Submit Button
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState?.saveAndValidate() ?? false) {
+                    final formData = _formKey.currentState?.value;
+                    print('✅ Form Data: $formData');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Form submitted successfully!')),
+                    );
+                  } else {
+                    print('❌ Validation failed');
+                  }
+                },
+                child: const Text('Submit'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
