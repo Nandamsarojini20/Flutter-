@@ -1,0 +1,49 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="#FFFFFF">
+
+    <!-- Circle progress image or placeholder -->
+    <ImageView
+        android:id="@+id/trophyImage"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/trophy"  <!-- Your trophy image -->
+        android:contentDescription="@string/trophy" />
+
+    <!-- Score percentage -->
+    <TextView
+        android:id="@+id/scorePercentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="100%"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_green_dark"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Status message -->
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Passed"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_green_dark"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Summary -->
+    <TextView
+        android:id="@+id/summaryText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Questions: 6\nTrue Answers: 6\nWrong Answers: 0"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_marginTop="24dp"/>
+
+</LinearLayout>
