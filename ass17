@@ -1,0 +1,45 @@
+import 'package:flutter/foundation.dart'; // for kIsWeb
+import 'package:flutter/material.dart';
+import 'dart:io' show Platform; // for Platform.isAndroid
+
+void main() {
+  runApp(PlatformSpecificTextApp());
+}
+
+class PlatformSpecificTextApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Platform Specific Text Demo',
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(title: const Text("Platform Specific Text")),
+        body: Center(
+          child: getPlatformText(),
+        ),
+      ),
+    );
+  }
+
+  Widget getPlatformText() {
+    if (kIsWeb) {
+      // ✅ Running on Flutter Web
+      return const Text(
+        "This is for the web!!",
+        style: TextStyle(fontSize: 24, color: Colors.blue),
+      );
+    } else if (Platform.isAndroid) {
+      // ✅ Running on Android
+      return const Text(
+        "This is for android!!",
+        style: TextStyle(fontSize: 24, color: Colors.green),
+      );
+    } else {
+      // ✅ For any other platform (iOS, Windows, etc.)
+      return const Text(
+        "This is for other platforms!!",
+        style: TextStyle(fontSize: 24, color: Colors.grey),
+      );
+    }
+  }
+}
