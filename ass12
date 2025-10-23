@@ -1,0 +1,53 @@
+package com.example.datepickerexample
+
+import android.app.DatePickerDialog
+import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import java.text.SimpleDateFormat
+import java.util.*
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var startDateText: TextView
+    private lateinit var endDateText: TextView
+    private lateinit var selectDateBtn: Button
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        startDateText = findViewById(R.id.startDateText)
+        endDateText = findViewById(R.id.endDateText)
+        selectDateBtn = findViewById(R.id.selectDateBtn)
+
+        val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+
+        selectDateBtn.setOnClickListener {
+            val calendar = Calendar.getInstance()
+
+            val datePicker = DatePickerDialog(
+                this,
+                { _, year, month, dayOfMonth ->
+                    // Set selected start date
+                    val startDate = Calendar.getInstance()
+                    startDate.set(year, month, dayOfMonth)
+
+                    // Calculate end date (29 days ago)
+                    val endDate = startDate.clone() as Calendar
+                    endDate.add(Calendar.DAY_OF_MONTH, -29)
+
+                    // Format and show the dates
+                    startDateText.text = "Start Date: ${dateFormat.format(startDate.time)}"
+                    endDateText.text = "End Date: ${dateFormat.format(endDate.time)}"
+
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePicker.show()
+        }
+    }
+}
