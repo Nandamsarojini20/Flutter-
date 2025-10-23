@@ -1,0 +1,88 @@
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+// Colors list
+final colors = [
+  Colors.blue,
+  Colors.green,
+  Colors.orange,
+  Colors.purple,
+  Colors.red,
+  Colors.teal,
+  Colors.amber,
+  Colors.cyan,
+  Colors.indigo,
+  Colors.lime,
+];
+
+// StateProvider for background color
+final colorProvider = StateProvider<Color>((ref) => Colors.blue);
+
+// StateProvider for current note index (1 to 10)
+final noteProvider = StateProvider<int>((ref) => 1);
+
+final audioPlayer = AudioPlayer();
+
+void main() {
+  runApp(const ProviderScope(child: MyApp()));
+}
+
+class MyApp extends ConsumerWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  // Play sound method
+  Future<void> playNote(int noteNumber) async {
+    await audioPlayer.play(AssetSource('assets/sounds/note$noteNumber.wav'));
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentColor = ref.watch(colorProvider);
+    final currentNote = ref.watch(noteProvider);
+
+    void changeColorAndPlayNote() {
+      final random = Random();
+
+      // Change color randomly (different from current)
+      Color newColor;
+      do {
+        newColor = colors[random.nextInt(colors.length)];
+      } while (newColor == currentColor);
+
+      // Random note 1-10
+      final newNote = random.nextInt(10) + 1;
+
+      // Update providers
+      ref.read(colorProvider.notifier).state = newColor;
+      ref.read(noteProvider.notifier).state = newNote;
+
+      // Play note
+      playNote(newNote);
+    }
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        backgroundColor: currentColor,
+        appBar: AppBar(
+          backgroundColor: currentColor,
+          title: const Text('Riverpod Color & Sound Player'),
+        ),
+        body: Center(
+          child: Text(
+            'Tap the button to change color & play a note',
+            style: TextStyle(fontSize: 22, color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: changeColorAndPlayNote,
+          child: const Icon(Icons.music_note),
+        ),
+      ),
+    );
+  }
+}
