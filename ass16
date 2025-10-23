@@ -1,0 +1,81 @@
+import 'package:flutter/material.dart';
+import 'dart:ui' as ui; // Import dart:ui for Paint and Canvas
+
+void main() {
+  runApp(DrawingApp());
+}
+
+class DrawingApp extends StatefulWidget {
+  @override
+  _DrawingAppState createState() => _DrawingAppState();
+}
+
+class _DrawingAppState extends State<DrawingApp> {
+  List<Offset?> points = []; // Stores drawing points
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(title: const Text("Simple Drawing App")),
+        body: GestureDetector(
+          onPanStart: (details) {
+            setState(() {
+              points.add(details.localPosition);
+            });
+          },
+          onPanUpdate: (details) {
+            setState(() {
+              points.add(details.localPosition);
+            });
+          },
+          onPanEnd: (details) {
+            setState(() {
+              points.add(null); // marks end of stroke
+            });
+          },
+          child: CustomPaint(
+            painter: DrawingPainter(points),
+            size: Size.infinite,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            setState(() {
+              points.clear();
+            });
+          },
+          child: const Icon(Icons.refresh),
+          tooltip: "Clear Drawing",
+        ),
+      ),
+    );
+  }
+}
+
+// Custom Painter
+class DrawingPainter extends CustomPainter {
+  final List<Offset?> points;
+  DrawingPainter(this.points);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.black
+      ..strokeWidth = 4.0
+      ..strokeCap = StrokeCap.round
+      ..isAntiAlias = true
+      ..style = PaintingStyle.stroke;
+
+    for (int i = 0; i < points.length - 1; i++) {
+      if (points[i] != null && points[i + 1] != null) {
+        canvas.drawLine(points[i]!, points[i + 1]!, paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(DrawingPainter oldDelegate) => true;
+}
