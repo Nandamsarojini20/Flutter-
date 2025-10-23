@@ -1,0 +1,74 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(RotationExample());
+}
+
+class RotationExample extends StatefulWidget {
+  @override
+  _RotationExampleState createState() => _RotationExampleState();
+}
+
+class _RotationExampleState extends State<RotationExample>
+    with SingleTickerProviderStateMixin {
+
+  late AnimationController _controller;
+  bool isClockwise = true; // Toggle state
+
+  @override
+  void initState() {
+    super.initState();
+
+    // AnimationController for rotation
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    );
+
+    // Repeat rotation forever (optional)
+    _controller.repeat();
+  }
+
+  void toggleRotation() {
+    setState(() {
+      isClockwise = !isClockwise;
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Image Rotation Example')),
+        body: Center(
+          child: RotationTransition(
+            turns: Tween(begin: 0.0, end: 1.0)
+                .animate(_controller)
+                // Reverse direction dynamically
+                ..addListener(() {
+                  if (!isClockwise) {
+                    _controller.value = 1.0 - _controller.value;
+                  }
+                }),
+            child: Image.asset(
+              'assets/clock.png', // Your clock image in assets
+              width: 150,
+              height: 150,
+            ),
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: toggleRotation,
+          child: Icon(isClockwise ? Icons.rotate_right : Icons.rotate_left),
+          tooltip: 'Toggle Rotation Direction',
+        ),
+      ),
+    );
+  }
+}
